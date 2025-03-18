@@ -17,5 +17,8 @@ IBM.price += 20
 w.sellStock(IBM, 1)
 console.log(w)
 
-// Erreur:
-// w.sellStock(IBM, 2)
+//Erreur:
+//w.sellStock(IBM, 2)
+
+//Erreur achat:
+//w.buyStock(IBM, 10)

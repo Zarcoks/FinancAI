@@ -1,6 +1,5 @@
 class Stock {
     /**
-     * 
      * @param {String} name 
      * @param {Number} price 
      */

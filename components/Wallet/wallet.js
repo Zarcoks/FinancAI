@@ -1,15 +1,15 @@
-const StockUniqueStorage = require("./stockUniqueStorage")
+const StockContainerManager = require("./stockContainerManager")
 const Stock = require("../Stock/stock")
+const WalletCommonSenseManager = require("./walletCommonSenseManager")
 
 class Wallet {
     /**
-     * 
      * @param {Number} baseAmount 
      */
     constructor(baseAmount) {
         this.baseAmount = baseAmount
         this.amount = baseAmount
-        this.stockWallet = []
+        this.stockContainerManager = new StockContainerManager()
     }
 
     /**
@@ -18,41 +18,26 @@ class Wallet {
      * @param {Number} quantity 
      */
     buyStock(stock, quantity) {
-        // Cherche si l'action est déjà dans le porte monnaie
-        let i = this.stockWallet.findIndex((elt) => {
-            return elt.stock.name === stock.name
-        })
-
-        if (i >= 0)
-            // Ajouter les actions au porte monnaie
-            this.stockWallet[i].addValue(quantity)
-        else 
-            // Créer une unité de stockage de l'action
-            this.stockWallet.push(new StockUniqueStorage(stock, quantity))
-        
-        // Procéder à l'achat
-        this.amount -= stock.price * quantity
+        if (WalletCommonSenseManager.canBuyStock(stock, quantity, this.amount)) {
+            this.stockContainerManager.addStock(stock, quantity)
+            this.amount -= stock.price * quantity
+        }
+        else throw new Error("You cannot buy this stock")
     }
 
+
+    /**
+     * Retire l'action du porte monnaie et ajoute l'argent de la vente
+     * @param {*} stock 
+     * @param {*} quantity 
+     */
     sellStock(stock, quantity) {
-        // Cherche si l'action dans le porte monnaie
-        let i = this.stockWallet.findIndex((elt) => {
-            return elt.stock.name === stock.name
-        })
-
-        // Action non présente dans le portefeuille
-        if (i === -1) 
-            throw new Error("You cannot sell this stock because you don't own any.")
-
-        let newStockQuantity = this.stockWallet[i].quantity - quantity
-
-        // Tentative de vente supérieur à la quantité possédée
-        if (newStockQuantity < 0)
-            throw new Error("You cannot sell this stock because you don't own enough")
-
-        // Procédure
-        this.amount += stock.price * quantity
-        this.stockWallet[i].quantity = newStockQuantity
+        if (WalletCommonSenseManager.canSellStock(this.stockContainerManager.getStockQuantity(stock), quantity)) {
+            this.stockContainerManager.removeStock(stock, quantity)
+            this.amount += stock.price * quantity
+        }
+        else throw new Error("You cannot sell this stock")
+        
     }
 }
 
