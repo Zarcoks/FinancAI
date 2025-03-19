@@ -67,6 +67,10 @@ class StockContainerManager {
     hasStock(stock) {
         return this.getStockIndex(stock) >= 0
     }
+
+    reset() {
+        this.stockContainers = []
+    }
 }
 
 module.exports = StockContainerManager

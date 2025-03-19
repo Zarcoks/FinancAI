@@ -65,6 +65,14 @@ class Wallet {
     getTransactionPrice() {
         return 1
     }
+
+    /**
+     * Remet le porte monnaie à sa valeur initiale, ainsi que le conteneur d'actions à vide
+     */
+    reset() {
+        this.amount = this.baseAmount
+        this.stockContainerManager.reset()
+    }
 }
 
 module.exports = Wallet

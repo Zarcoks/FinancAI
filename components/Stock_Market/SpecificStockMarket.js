@@ -31,6 +31,12 @@ class SpecificStockMarket {
     getCurrentStockPrice() {
         return this.stock.price
     }
+
+    reset(currentDay) {
+        this.stock = new Stock(this.stockName, this.getOpenPrice(currentDay))
+        this.averageStockPrice = this.stock.price
+        this.nbTimesOfCalculatingAv = 1
+    }
 }
 
 module.exports = SpecificStockMarket

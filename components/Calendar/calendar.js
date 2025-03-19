@@ -30,6 +30,11 @@ class Calendar {
     getIsMorning() {
         return this.isMorning
     }
+
+    reset() {
+        this.currentDay = 0
+        this.isMorning = true
+    }
 }
 
 module.exports = Calendar

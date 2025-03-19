@@ -14,6 +14,7 @@ class Agent {
         this.specificStockMarket = ssm
         this.actions = ["buy", "sell", "sellAndBuy", "doNothing"]
         this.brain = new Brain(agentService.getNbStates(), this.actions.length)
+        this.generation = 0
     }
 
     getState() {
@@ -22,6 +23,24 @@ class Agent {
 
     getCurrentReward() {
         return this.wallet.getBenefitsAcquired()
+    }
+
+    /**
+     * 
+     * @param {Agent} agent 
+     */
+    copyBrain(agent) {
+        this.brain.resetCopy(agent.brain)
+    }
+
+    /**
+     * 
+     * @param {Agent} agent 
+     */
+    evolve(agent) {
+        this.reset() // Reset du wallet
+        this.copyBrain(agent) // Nouveau cerveau
+        this.generation+=1
     }
 
     /**
@@ -50,6 +69,10 @@ class Agent {
         if (Math.random() < eps)
             return Math.floor(Math.random() * this.actions.length); // 0, 1 ou 2 random
         return this.brain.getArgMaxFromQatIndex(this.getState()) 
+    }
+
+    reset() {
+        this.wallet.reset()
     }
 }
 

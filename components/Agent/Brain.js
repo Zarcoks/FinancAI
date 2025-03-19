@@ -1,7 +1,14 @@
 class Brain {
     constructor(nbStates, nbActions) {
-        let test = this.buildZeroMatrix(nbStates, nbActions)
-        this.Q = test
+        this.Q = this.buildZeroMatrix(nbStates, nbActions)
+    }
+
+    /**
+     * 
+     * @param {Brain} brain 
+     */
+    resetCopy(brain) {
+        this.Q = [...brain.Q]
     }
 
     buildZeroMatrix(height, width) {
