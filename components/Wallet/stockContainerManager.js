@@ -19,7 +19,7 @@ class StockContainerManager {
     }
     
     removeStockContainer(stockContainer) {
-        this.stockContainers.filter((elt) => {
+        this.stockContainers = this.stockContainers.filter((elt) => {
             return elt !== stockContainer
         })
     }
@@ -54,6 +54,18 @@ class StockContainerManager {
         // Retire l'action du conteneur si la quantité passe à 0
         if (this.stockContainers[i].quantity === 0) 
             this.removeStockContainer(this.stockContainers[i])
+    }
+
+    getTotalStockAmount() {
+        let total = 0
+        this.stockContainers.forEach((elt) => {
+            total += elt.stock.price * elt.quantity
+        })
+        return total
+    }
+
+    hasStock(stock) {
+        return this.getStockIndex(stock) >= 0
     }
 }
 

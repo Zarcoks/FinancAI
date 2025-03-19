@@ -21,6 +21,7 @@ class Wallet {
         if (WalletCommonSenseManager.canBuyStock(stock, quantity, this.amount)) {
             this.stockContainerManager.addStock(stock, quantity)
             this.amount -= stock.price * quantity
+            this.amount -= this.getTransactionPrice()
         }
         else throw new Error("You cannot buy this stock")
     }
@@ -34,10 +35,35 @@ class Wallet {
     sellStock(stock, quantity) {
         if (WalletCommonSenseManager.canSellStock(this.stockContainerManager.getStockQuantity(stock), quantity)) {
             this.stockContainerManager.removeStock(stock, quantity)
-            this.amount += stock.price * quantity
+            this.amount += stock.price * quantity 
+            this.amount -= this.getTransactionPrice()
         }
         else throw new Error("You cannot sell this stock")
-        
+    }
+
+
+    /**
+     * Retourne la somme des derniers prix connus des actions avec l'amount actuel du portefeuille.
+     * @returns {Number}
+     */
+    getTotalAmount() {
+        return this.amount + this.stockContainerManager.getTotalStockAmount()
+    }
+
+    getBenefitsAcquired() {
+        return this.getTotalAmount() - this.baseAmount
+    }
+
+    canAfford(stock) {
+        return this.amount >= stock.price
+    }
+
+    canSell(stock) {
+        return this.stockContainerManager.hasStock(stock)
+    }
+
+    getTransactionPrice() {
+        return 1
     }
 }
 
