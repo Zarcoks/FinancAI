@@ -13,11 +13,13 @@ class EnvirronmentManager {
     }
 
     /**
-     * 
+     * Lance une session de 20 ans sur l'investissement
      * @param {Boolean} seriousness définit si les agents explorent (false) ou n'explorent pas (true)
      * @param {Boolean} printGenerationData 
      */
     start(seriousness, printGenerationData) {
+        this.resetEnvironment()
+        this.population.resetAgents() // Reset le porte monnaie des agents 
         for (let i = 0; i<this.nbElements-1; i++) {
             this.population.processAgents(seriousness)
             this.calendar.nextDayTime()
@@ -25,8 +27,9 @@ class EnvirronmentManager {
         }
         if (printGenerationData) {
             let bestAg = this.population.getBestAgent()
-            console.log(`Generation ${bestAg.generation}, best score: ${bestAg.wallet.getTotalAmount()}`)
-            this.population.printTopRanking(3)
+            console.log("########################\nFinished 20 years daily training\n########################")
+            console.log(`Generation ${bestAg.generation}, best score: ${bestAg.wallet.getTotalAmount()}\n`)
+            //this.population.printTopRanking(3)
         }
     }
 
@@ -35,6 +38,7 @@ class EnvirronmentManager {
      */
     resetEnvironment() {
         this.calendar.reset()
+        this.population.resetAgents()
         this.specificStockMarket.reset(this.calendar.getCurrentDay())
     }
 
@@ -48,20 +52,25 @@ class EnvirronmentManager {
     }
 
     /**
+     * Lance un entrainement de n * 20 ans d'évolution boursier
+     * A chaque 20 ans, lance un examen sur l'agent en le faisant investir sur des choix sans exploration
+     * L'examen est lui aussi sur une session de 20 ans
      * @param {Number} nbTimes 
      * @param {Boolean} printGenerationData
      */
-    loop(nbTimes, printGenerationData=false) {
+    loop(nbTimes, exam=false) {
         for (let i = 0; i<nbTimes; i++) {
             // Training
             this.start(false, false)
-            this.resetEnvironment()
 
-            // Evaluation
-            this.start(true, printGenerationData)
-            this.resetEnvironment()
-            this.population.buildNextGeneration()
+            if (exam) {
+                this.startSeriousSession()
+            }
         }
+    }
+
+    startSeriousSession() {
+        this.start(true, true)
     }
 
     /**

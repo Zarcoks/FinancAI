@@ -21,8 +21,10 @@ class Agent {
         return agentService.calculateState(this.wallet, this.specificStockMarket.averageStockPrice, this.specificStockMarket.stock)
     }
 
-    getCurrentReward() {
-        return this.wallet.getBenefitsAcquired()
+    getCurrentReward(actionIndex) {
+        if (this.actions[actionIndex] === "sell" || this.actions[actionIndex] === "sellAndBuy")
+            return this.wallet.getBenefitsAcquired()
+        return 0
     }
 
     /**
@@ -67,7 +69,7 @@ class Agent {
     takeAction(eps) {
         //this.updateActions()
         if (Math.random() < eps)
-            return Math.floor(Math.random() * this.actions.length); // 0, 1 ou 2 random
+            return Math.floor(Math.random() * this.actions.length); // Action random
         return this.brain.getArgMaxFromQatIndex(this.getState()) 
     }
 

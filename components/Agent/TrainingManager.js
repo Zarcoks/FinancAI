@@ -13,7 +13,6 @@ class TrainingManager {
         this.nbAgents = nbAgents
         this.specificStockMarket = specificStockMarket
         this.agents = this.buildNoBrainAgents(this.nbAgents)
-        this.bestAgentOfHistory = {...this.agents[0]}
     }
 
     /**
@@ -72,10 +71,7 @@ class TrainingManager {
     }
 
     buildNextGeneration() {
-        const bestAgent = {...this.getBestAgent()}
-        this.updateBestAgentOfAllTime(bestAgent)
-
-        this.rebuildAgentsOn(this.bestAgentOfHistory)
+        this.rebuildAgentsOn(this.getBestAgent())
     }
 
     /**
@@ -84,16 +80,6 @@ class TrainingManager {
     rebuildAgentsOn(bestAgent) {
         for (let k = 0; k<this.nbAgents; k++) {
             this.agents[k].evolve(bestAgent)
-        }
-    }
-
-    /**
-     * 
-     * @param {Agent} bestGenerationAgent 
-     */
-    updateBestAgentOfAllTime(bestGenerationAgent) {
-        if (bestGenerationAgent.wallet.getTotalAmount() >= this.bestAgentOfHistory.wallet.getTotalAmount()){
-            this.bestAgentOfHistory = {...bestGenerationAgent}
         }
     }
 
@@ -109,6 +95,12 @@ class TrainingManager {
 
     hardReset() {
         this.agents = this.buildNoBrainAgents()
+    }
+
+    resetAgents() {
+        for (let k = 0; k<this.nbAgents; k++) {
+            this.agents[k].reset() // reset le porte monnaie
+        }
     }
 
     printTopRanking(nbAgents) {

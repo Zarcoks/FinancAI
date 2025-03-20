@@ -38,7 +38,7 @@ class AgentManager {
         let newState = agent.getState()
         let newAction = agent.takeAction(0)
 
-        agent.brain.update(state, action, newState, newAction, agent.getCurrentReward())
+        agent.brain.update(state, action, newState, newAction, agent.getCurrentReward(action))
     }
 
     static applyTrainingDecision(agent, debug) {
