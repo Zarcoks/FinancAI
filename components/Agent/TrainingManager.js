@@ -8,10 +8,9 @@ class TrainingManager {
      * @param {Number} nbAgents 
      * @param {SpecificStockMarket} specificStockMarket 
      */
-    constructor(specificStockMarket) {
-        this.baseWalletAmount = 200
+    constructor(specificStockMarket, agentBaseWalletAmount) {
         this.specificStockMarket = specificStockMarket
-        this.agent = this.buildNoBrainAgent()
+        this.agent = this.buildNewbieAgent(agentBaseWalletAmount)
     }
 
     /**
@@ -19,8 +18,8 @@ class TrainingManager {
      * @param {Number} nbAgents 
      * @returns {Agent}
      */
-    buildNoBrainAgent() {
-        return new Agent(new Wallet(this.baseWalletAmount), this.specificStockMarket)
+    buildNewbieAgent(agentBaseWalletAmount) {
+        return new Agent(new Wallet(agentBaseWalletAmount), this.specificStockMarket)
     }
 
     /**

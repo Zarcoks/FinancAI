@@ -4,12 +4,12 @@ const SpecificStockMarket = require("../Stock_Market/SpecificStockMarket")
 const TrainingManager = require("../Agent/TrainingManager")
 
 class EnvirronmentManager {
-    constructor() {
+    constructor(agentBaseWalletAmount) {
         this.data = DataTranslator.getIBMTable()
         this.nbElements = DataTranslator.getDays(this.data).length
         this.calendar = new Calendar(DataTranslator.getDays(this.data))
         this.specificStockMarket = new SpecificStockMarket("IBM", this.data, this.calendar.getCurrentDay())
-        this.trainer = new TrainingManager(this.specificStockMarket)
+        this.trainer = new TrainingManager(this.specificStockMarket, agentBaseWalletAmount)
     }
 
     /**

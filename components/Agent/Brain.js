@@ -20,7 +20,6 @@ class Brain {
     }
 
     update(state, action, newState, newAction, reward) {
-        //console.log(`updating state ${state}, action ${action} with a reward of ${reward}`)
         this.Q[state][action] = this.Q[state][action] + 0.1*(reward + 0.9*this.Q[newState][newAction] - this.Q[state][action])
     }
 

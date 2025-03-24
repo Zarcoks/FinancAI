@@ -1,6 +1,6 @@
 const EnvirronmentManager = require("./components/Envirronment/EnvirronmentManager")
 
-const env = new EnvirronmentManager(1)
+const env = new EnvirronmentManager(2000)
 
 env.loop(100000)
 console.log(env.trainer.agent.brain.Q)
