@@ -1,6 +1,6 @@
 const StockContainerManager = require("./stockContainerManager")
 const Stock = require("../Stock/stock")
-const WalletCommonSenseManager = require("./walletCommonSenseManager")
+const TransactionsManager = require("../Transaction/TransactionsManager")
 
 class Wallet {
     /**
@@ -10,6 +10,7 @@ class Wallet {
         this.baseAmount = baseAmount
         this.amount = baseAmount
         this.stockContainerManager = new StockContainerManager()
+        this.transactionsManager = new TransactionsManager()
     }
 
     /**
@@ -18,29 +19,23 @@ class Wallet {
      * @param {Number} quantity 
      */
     buyStock(stock, quantity) {
-        if (WalletCommonSenseManager.canBuyStock(stock, quantity, this.amount)) {
-            this.stockContainerManager.addStock(stock, quantity)
-            this.amount -= stock.price * quantity
-            this.amount -= this.getTransactionPrice()
-        }
-        else throw new Error("You cannot buy this stock")
+        this.stockContainerManager.addStock(stock, quantity)
+        this.amount -= stock.price * quantity
+        this.amount -= this.getTransactionPrice()
+        this.transactionsManager.addTransaction(stock, quantity)
     }
-
 
     /**
      * Retire l'action du porte monnaie et ajoute l'argent de la vente
-     * @param {*} stock 
-     * @param {*} quantity 
+     * @param {Stock} stock 
+     * @param {Number} quantity 
      */
     sellStock(stock, quantity) {
-        if (WalletCommonSenseManager.canSellStock(this.stockContainerManager.getStockQuantity(stock), quantity)) {
-            this.stockContainerManager.removeStock(stock, quantity)
-            this.amount += stock.price * quantity 
-            this.amount -= this.getTransactionPrice()
-        }
-        else throw new Error("You cannot sell this stock")
+        this.stockContainerManager.removeStock(stock, quantity)
+        this.amount += stock.price * quantity 
+        this.amount -= this.getTransactionPrice()
+        this.transactionsManager.addTransaction(stock, -quantity)
     }
-
 
     /**
      * Retourne la somme des derniers prix connus des actions avec l'amount actuel du portefeuille.
@@ -50,8 +45,8 @@ class Wallet {
         return this.amount + this.stockContainerManager.getTotalStockAmount()
     }
 
-    getBenefitsAcquired() {
-        return this.getTotalAmount() - this.baseAmount
+    getBenefitsAcquiredOnLastSell() {
+        return this.transactionsManager.getBenefitsOnLastSell()
     }
 
     canAfford(stock) {
@@ -66,12 +61,25 @@ class Wallet {
         return 1
     }
 
+    hasNegativeAmount() {
+        return this.amount < 0
+    }
+
+    hasAtLeastOneStockAtNegativeQuantity() {
+        return this.stockContainerManager.hasStockWithNegativeQuantity()
+    }
+
+    hasSometingNotAllowed() {
+        return this.hasNegativeAmount() || this.hasAtLeastOneStockAtNegativeQuantity()
+    }
+
     /**
      * Remet le porte monnaie à sa valeur initiale, ainsi que le conteneur d'actions à vide
      */
     reset() {
         this.amount = this.baseAmount
         this.stockContainerManager.reset()
+        this.transactionsManager.reset()
     }
 }
 

@@ -2,5 +2,6 @@ const EnvirronmentManager = require("./components/Envirronment/EnvirronmentManag
 
 const env = new EnvirronmentManager(1)
 
-env.loop(1000, true)
-console.log(env.population.agents[0].brain.Q)
+env.loop(100000)
+console.log(env.trainer.agent.brain.Q)
+console.log(env.trainer.agent.wallet.transactionsManager.getStatistics())

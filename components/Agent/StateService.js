@@ -23,7 +23,20 @@ class StateService {
          * 7: The stock is arround +-5% of the average price
          * 8: The stock is upper 105% of the average price
          * 
-         * 9: Cannot do nothing
+         * States:
+         * ###############################################
+         * #/////////////////////# < x % # ~ x % # > x % #
+         * ###############################################
+         * # Can Afford AND Sell #   0   #   1   #   2   #
+         * ###############################################
+         * # Can Afford ONLY     #   3   #   4   #   5   #
+         * ###############################################
+         * # Can Sell ONLY       #   6   #   7   #   8   #
+         * ###############################################
+         * #            9: Cannot do nothing             #
+         * ###############################################
+         * 
+         * 
          */
         if (wallet.canAfford(stock) && wallet.canSell(stock)) {
             if (stock.price < averagePrice*0.98) return 0

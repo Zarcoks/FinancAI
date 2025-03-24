@@ -3,7 +3,7 @@ const StockContainer = require("./stockContainer")
 
 class StockContainerManager {
     constructor() {
-        this.stockContainers = []
+        this.stockContainers = [] // Gère la quantité d'actions
     }
 
     getStockQuantity(stock) {
@@ -45,15 +45,7 @@ class StockContainerManager {
      * @param {Number} quantity 
      */
     removeStock(stock, quantity) {
-        // Procède à la réduction de quantité
-        let i = this.getStockIndex(stock)
-
-        // Ajouter les actions au porte monnaie
-        this.stockContainers[i].quantity -= quantity
-
-        // Retire l'action du conteneur si la quantité passe à 0
-        if (this.stockContainers[i].quantity === 0) 
-            this.removeStockContainer(this.stockContainers[i])
+        this.addStock(stock, -quantity)
     }
 
     getTotalStockAmount() {
@@ -65,11 +57,24 @@ class StockContainerManager {
     }
 
     hasStock(stock) {
-        return this.getStockIndex(stock) >= 0
+        let stockIndex = this.getStockIndex(stock)
+        if (stockIndex < 0) return false
+        if(this.stockContainers[stockIndex].quantity > 0) return true
+        return false
     }
 
     reset() {
         this.stockContainers = []
+    }
+
+    /**
+     * @returns {Boolean}
+     */
+    hasStockWithNegativeQuantity() {
+        this.stockContainers.forEach(stockContainer => {
+            if (stockContainer.quantity < 0) return true
+        })
+        return false
     }
 }
 

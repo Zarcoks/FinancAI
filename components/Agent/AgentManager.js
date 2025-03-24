@@ -10,39 +10,26 @@ class AgentManager {
         let state = agent.getState()
         let action = agent.takeAction(eps)
 
-        if (agent.actions[action] === "buy") {
-            if (!agent.wallet.canAfford(agent.specificStockMarket.stock)) {
-                action = agent.actions.indexOf("doNothing")
-            }
-            else agent.wallet.buyStock(agent.specificStockMarket.stock, 1)
-        }
-        else if (agent.actions[action] === "sell") {
-            if (!agent.wallet.canSell(agent.specificStockMarket.stock)) {
-                action = agent.actions.indexOf("doNothing")
-            }
-            else agent.wallet.sellStock(agent.specificStockMarket.stock, 1)
-        }
-        else if (agent.actions[action] === "sellAndBuy") {
-            if (!agent.wallet.canSell(agent.specificStockMarket.stock)
-             || !agent.wallet.canAfford(agent.specificStockMarket.stock)) {
-                action = agent.actions.indexOf("doNothing")
-            }
-            else {
-                agent.wallet.sellStock(agent.specificStockMarket.stock, 1)
-                agent.wallet.buyStock(agent.specificStockMarket.stock, 1)
-            }
-        }
+        //console.log(`I'm in state ${state} and taking action ${action}`)
+        //console.log(agent.brain.Q)
+        const reward = agent.getCurrentReward(action)
+
+        if (agent.actions[action] === "buy")
+            agent.wallet.buyStock(agent.specificStockMarket.stock, 1)
+            
+        else if (agent.actions[action] === "sell")
+            agent.wallet.sellStock(agent.specificStockMarket.stock, 1)
 
         if (debug) console.log(agent.actions[action])
 
         let newState = agent.getState()
         let newAction = agent.takeAction(0)
 
-        agent.brain.update(state, action, newState, newAction, agent.getCurrentReward(action))
+        agent.brain.update(state, action, newState, newAction, reward)
     }
 
     static applyTrainingDecision(agent, debug) {
-        this.applyDecision(agent, 0.4, debug)
+        this.applyDecision(agent, 0.2, debug)
     }
 
     static applySeriousDecision(agent, debug) {
